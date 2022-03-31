@@ -11,6 +11,7 @@ const assets = require('./assets');
 const mailer = require('./mailers');
 const routes = require('./routes');
 const orm = require('./models');
+const api = require('./routes/api');
 
 // App constructor
 const app = new Koa();
@@ -85,5 +86,6 @@ mailer(app);
 
 // Routing middleware
 app.use(routes.routes());
+app.use(api.routes());
 
 module.exports = app;
