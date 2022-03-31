@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasOne(models.userToken, { as: 'userToken', foreignKey: 'user_id' });
     }
   };
   user.init({
@@ -72,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: true,
         notEmpty: true,
+        isFloat: true
       },
     },
     job: {
@@ -88,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: true,
         notEmpty: true,
+        isFloat: true
       },
     },
     promotion: {
@@ -120,6 +123,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: true,
         notEmpty: true,
+        isFloat: true
       },
     },
   }, {
