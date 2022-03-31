@@ -130,7 +130,22 @@ router.patch('api.users.update', '/:id', async (ctx) => {
                 individualHooks: true,
             });
             const updatedUser = await ctx.orm.user.findByPk(user.id);
-            ctx.body = updatedUser;
+            ctx.status = 201
+            ctx.body = ctx.body = {
+                id: updatedUser.id,
+                username: updatedUser.username,
+                name: updatedUser.name,
+                age: updatedUser.age,
+                psu_score: updatedUser.psu_score,
+                university: updatedUser.university,
+                gpa_score: updatedUser.gpa_score,
+                job: updatedUser.job,
+                salary: updatedUser.salary,
+                promotion: updatedUser.promotion,
+                hospital: updatedUser.hospital,
+                operations: updatedUser.operations,
+                medical_debt: updatedUser.medical_debt
+            };
         } catch (Error) {
             if (Error.errors[0].type == "unique violation") {
                 ctx.status = 409
@@ -140,11 +155,33 @@ router.patch('api.users.update', '/:id', async (ctx) => {
             } else {
                 ctx.status = 400
                 ctx.body = {
-                    error: "invalid attributes"
+                    error: "invalid update"
                 }
             }
         }
     }
 });
+
+router.delete('api.users.delete', '/:id', async (ctx) => {
+    const user = await ctx.orm.user.findByPk(ctx.params.id);
+    const token_given = ctx.request.headers.authorization
+    const token = await ctx.orm.userToken.findOne({
+        where: { token: token_given }
+    });
+    if (!token || !user) {
+        ctx.status = 401
+        ctx.body = {
+            error: "invalid token"
+        }
+    } else if (token.user_id != user.id) {
+        ctx.status = 403
+        ctx.body = {
+            error: "you do not have access to this resource"
+        }
+    } else {
+        await user.destroy()
+        ctx.status = 204
+    }
+})
 
 module.exports = router;
